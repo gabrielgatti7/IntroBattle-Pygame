@@ -1,5 +1,6 @@
 import pygame
 from batalha import Batalha
+from menu_inicial import Menu
 
 # Inicializar o Pygame
 pygame.init()
@@ -24,10 +25,12 @@ img_seta = pygame.image.load("imagens/setinha.png")
 img_seta_baixo = pygame.transform.scale(img_seta, (50, 35))
 img_seta_lado = pygame.transform.rotate(img_seta_baixo, 90)
 
+menu_inicial = Menu()
 batalha = Batalha()
 
-estado_jogo = 'menu'
+estado_jogo = 'menu_inicial'
 estado_batalha = None
+posicao_seta_menu_inicial = 0
 posicao_seta_menu = 0
 
 # Loop do jogo
@@ -38,11 +41,44 @@ clock = pygame.time.Clock()
 while executando:
     janela.blit(img_fundo, (0,0))
     clock.tick(fps)
-    selecao = []
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
             executando = False
-        if estado_batalha == 'selecionando_acao':
+        if estado_jogo == 'menu_inicial':
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_RIGHT:
+                    if posicao_seta_menu_inicial == 0:
+                        posicao_seta_menu_inicial = 1
+                    elif posicao_seta_menu_inicial == 1:
+                        posicao_seta_menu_inicial = 2
+                    elif posicao_seta_menu_inicial == 3:
+                        posicao_seta_menu_inicial = 4
+                elif evento.key == pygame.K_LEFT:
+                    if posicao_seta_menu_inicial == 1:
+                        posicao_seta_menu_inicial = 0
+                    elif posicao_seta_menu_inicial == 2:
+                        posicao_seta_menu_inicial = 1
+                    elif posicao_seta_menu_inicial == 4:
+                        posicao_seta_menu_inicial = 3
+                elif evento.key == pygame.K_DOWN:
+                    if posicao_seta_menu_inicial == 0:
+                        posicao_seta_menu_inicial = 3
+                    elif posicao_seta_menu_inicial == 1:
+                        posicao_seta_menu_inicial = 3
+                    elif posicao_seta_menu_inicial == 2:
+                        posicao_seta_menu_inicial = 4
+                elif evento.key == pygame.K_UP:
+                    if posicao_seta_menu_inicial == 3:
+                        posicao_seta_menu_inicial = 0
+                    elif posicao_seta_menu_inicial == 4:
+                        posicao_seta_menu_inicial = 1
+                elif evento.key == pygame.K_z:
+                    menu_inicial.seleciona_personagem(posicao_seta_menu_inicial)
+                    if menu_inicial.selecionou_todos():
+                        estado_jogo = 'jogando'
+                        batalha.cria_personagens(menu_inicial.personagens_selecionados)
+                        estado_batalha = 'selecionando_acao'
+        elif estado_batalha == 'selecionando_acao':
             if evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_RIGHT:
                     if posicao_seta_menu == 0:
@@ -78,28 +114,37 @@ while executando:
         elif estado_batalha == 'mostrando_ataque' or estado_batalha == 'mostrando_defesa':
             if evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_z:
-                    proximo = batalha.atualiza_ordem()
-                    if proximo == 'inimigo':
-                        acao_inimigo = batalha.realiza_acao_do_inimigo()
-                        if acao_inimigo == 'ataque':
-                            estado_batalha = 'mostrando_ataque'
-                        elif acao_inimigo == 'defesa':
-                            estado_batalha = 'mostrando_defesa'
+                    if batalha.verifica_fim_batalha() == 'continua':
+                        proximo = batalha.atualiza_ordem()
+                        if proximo == 'inimigo':
+                            acao_inimigo = batalha.realiza_acao_do_inimigo()
+                            if acao_inimigo == 'ataque':
+                                estado_batalha = 'mostrando_ataque'
+                            elif acao_inimigo == 'defesa':
+                                estado_batalha = 'mostrando_defesa'
+                        else:
+                            estado_batalha = 'selecionando_acao'
+                            posicao_seta_menu = 0
+                    # Acabou o jogo
                     else:
-                        estado_batalha = 'selecionando_acao'
-                        posicao_seta_menu = 0
+                        estado_jogo = batalha.verifica_fim_batalha()
     
-    if estado_jogo == 'menu':
+    if estado_jogo == 'menu_inicial':
         # Desenhar o menu
+        menu_inicial.desenhar_menu(janela)
 
-        # Verificar se selecionou 3 personagens
-        selecao = ['Paladin', 'Rogue', 'Wizard']
-        if len(selecao) == 3:
-            estado_jogo = 'jogando'
-            batalha.cria_personagens(selecao)
-            estado_batalha = 'selecionando_acao'
-    
-    if estado_jogo == 'jogando':
+        # Atualiza a posição da seta
+        if posicao_seta_menu_inicial == 0:
+            janela.blit(img_seta_baixo, (170, 180))
+        elif posicao_seta_menu_inicial == 1:
+            janela.blit(img_seta_baixo, (490, 180))
+        elif posicao_seta_menu_inicial == 2:
+            janela.blit(img_seta_baixo, (800, 180))
+        elif posicao_seta_menu_inicial == 3:
+            janela.blit(img_seta_baixo, (325, 460))
+        elif posicao_seta_menu_inicial == 4:
+            janela.blit(img_seta_baixo, (638, 460))
+    elif estado_jogo == 'jogando':
         # Desenhar os personagens da batalha
         batalha.desenha_bonecos(janela)
 
@@ -122,18 +167,17 @@ while executando:
                 janela.blit(img_seta_baixo, (805, 125))
             else:
                 janela.blit(img_seta_baixo, (725, 295))
-
-
-
-    #     # Verificar se o jogo acabou
-    #     estado_jogo = 'game_over'
-    
-
-    if estado_jogo == 'game_over':
-        # Desenhar a tela de game over
+    elif estado_jogo == 'vitoria' or estado_jogo == 'derrota':
+        # Desenhar a tela de vitoria/derrota
 
         # Verificar se quer jogar novamente
-        estado_jogo = 'menu'
+        menu_inicial = Menu()
+        batalha = Batalha()
+        estado_jogo = 'menu_inicial'
+        estado_batalha = None
+        posicao_seta_menu_inicial = 0
+        posicao_seta_menu = 0
+    
 
     pygame.display.flip()
 

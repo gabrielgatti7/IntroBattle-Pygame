@@ -10,3 +10,4 @@ class Cores(Enum):
     NOME_INIMIGO = (92,10,92)
     VIDA_INIMIGO = (20, 180, 20)
     DANO = (255, 0, 0)
+    SOMBRA = (50, 50, 50)

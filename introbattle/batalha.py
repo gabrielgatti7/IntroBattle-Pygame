@@ -16,18 +16,19 @@ class Batalha:
         self.aliados_mortos = 0
         self.inimigos_mortos = 0
         self.ultimo_aliado_atacado = 0
+        self.fonte = pygame.font.Font('font/EightBitDragon-anqx.ttf', 30)
 
     def cria_personagens(self, selecao):
         if 'Paladin' in selecao:
-            self.aliados.append(Personagem('Paladin', 100, 10, 10, 7))
+            self.aliados.append(Personagem('Paladin', 70, 10, 10, 7))
         if 'Rogue' in selecao:
-            self.aliados.append(Personagem('Rogue', 80, 15, 5, 20))
+            self.aliados.append(Personagem('Rogue', 40, 15, 5, 20))
         if 'Wizard' in selecao:
-            self.aliados.append(Personagem('Wizard', 60, 20, 10, 10))
+            self.aliados.append(Personagem('Wizard', 50, 20, 10, 10))
         if 'Hunter' in selecao:
-            self.aliados.append(Personagem('Hunter', 70, 12, 8, 15))
+            self.aliados.append(Personagem('Hunter', 60, 12, 8, 15))
         if 'Priest' in selecao:
-            self.aliados.append(Personagem('Priest', 50, 5, 15, 8))
+            self.aliados.append(Personagem('Priest', 30, 5, 15, 8))
         
         self.inimigos.append(Personagem('Necromancer', 80, 30, 15, 4))
         self.inimigos.append(Personagem('Skeleton', 40, 5, 1, 5))
@@ -79,18 +80,22 @@ class Batalha:
     def atualiza_menu(self, janela, estado_batalha, posicao_seta_menu):
         # Desenha a vida dos aliados no menu direito
         for i, aliado in enumerate(self.aliados):
-            fonte = pygame.font.Font(None, 45)
             if aliado.morreu():
-                texto_nome = fonte.render(f"{aliado.nome.upper()}", True, Cores.MORTO.value)
-                texto_vida = fonte.render(f"{aliado.vida_atual}/{aliado.vida_total}", True, Cores.MORTO.value)
+                texto_nome = self.fonte.render(f"{aliado.nome.upper()}", True, Cores.MORTO.value)
+                texto_vida = self.fonte.render(f"{aliado.vida_atual}/{aliado.vida_total}", True, Cores.MORTO.value)
             else:
-                texto_nome = fonte.render(f"{aliado.nome.upper()}", True, Cores.TEXTO_PADRAO.value)
-                texto_vida = fonte.render(f"{aliado.vida_atual}/{aliado.vida_total}", True, Cores.TEXTO_PADRAO.value)
+                texto_nome = self.fonte.render(f"{aliado.nome.upper()}", True, Cores.TEXTO_PADRAO.value)
+                texto_vida = self.fonte.render(f"{aliado.vida_atual}/{aliado.vida_total}", True, Cores.TEXTO_PADRAO.value)
                 if aliado.esta_defendendo():
-                    texto_nome = fonte.render(f"{aliado.nome.upper()}", True, Cores.DEFESA.value)
-                    texto_vida = fonte.render(f"{aliado.vida_atual}/{aliado.vida_total}", True, Cores.DEFESA.value)
-            janela.blit(texto_nome, (665, 570 + 53 * i))
-            janela.blit(texto_vida, (850, 570 + 53 * i))
+                    texto_nome = self.fonte.render(f"{aliado.nome.upper()}", True, Cores.DEFESA.value)
+                    texto_vida = self.fonte.render(f"{aliado.vida_atual}/{aliado.vida_total}", True, Cores.DEFESA.value)
+            texto_nome_sombra = self.fonte.render(f"{aliado.nome.upper()}", True, (50,50,50))
+            texto_vida_sombra = self.fonte.render(f"{aliado.vida_atual}/{aliado.vida_total}", True, (50,50,50))
+            janela.blit(texto_nome_sombra, (645+2, 570 + 53 * i +2))
+            janela.blit(texto_vida_sombra, (830+2, 570 + 53 * i +2))
+            janela.blit(texto_nome, (645, 570 + 53 * i))
+            janela.blit(texto_vida, (830, 570 + 53 * i))
+            
 
         personagem = self.ordem_personagens[self.personagem_atual]
 
@@ -98,68 +103,103 @@ class Batalha:
             # Desenha a vez do personagem atual e as opções de ação
             if personagem in self.aliados:
                 # Desenhar açoes do personagem
-                fonte = pygame.font.Font(None, 45)
-                texto_vez = fonte.render(f"{personagem.nome.upper()}\'S TURN", True, Cores.TEXTO_PADRAO.value)
+                texto_vez_sombra = self.fonte.render(f"{personagem.nome.upper()}\'S TURN", True, Cores.SOMBRA.value)
+                janela.blit(texto_vez_sombra, (70+2, 570+2))
+                texto_vez = self.fonte.render(f"{personagem.nome.upper()}\'S TURN", True, Cores.TEXTO_PADRAO.value)
                 janela.blit(texto_vez, (70, 570))
-                texto_attack = fonte.render("ATTACK", True, Cores.TEXTO_PADRAO.value)
+                texto_attack_sombra = self.fonte.render("ATTACK", True, Cores.SOMBRA.value)
+                janela.blit(texto_attack_sombra, (70+2, 620+2))
+                texto_attack = self.fonte.render("ATTACK", True, Cores.TEXTO_PADRAO.value)
                 janela.blit(texto_attack, (70, 620))
-                texto_defend = fonte.render("DEFEND", True, Cores.TEXTO_PADRAO.value)
+                texto_defend_sombra = self.fonte.render("DEFEND", True, Cores.SOMBRA.value)
+                janela.blit(texto_defend_sombra, (400+2, 620+2))
+                texto_defend = self.fonte.render("DEFEND", True, Cores.TEXTO_PADRAO.value)
                 janela.blit(texto_defend, (400, 620))
-                texto_atk_status = fonte.render(f"ATK: {personagem.ataque}", True, Cores.ATAQUE.value)
+                texto_atk_status_sombra = self.fonte.render(f"ATK: {personagem.ataque}", True, Cores.SOMBRA.value)
+                janela.blit(texto_atk_status_sombra, (70+2, 680+2))
+                texto_atk_status = self.fonte.render(f"ATK: {personagem.ataque}", True, Cores.ATAQUE.value)
                 janela.blit(texto_atk_status, (70, 680))
-                texto_def_status = fonte.render(f"DEF:", True, Cores.DEFESA.value)
+                texto_def_status_sombra = self.fonte.render(f"DEF:", True, Cores.SOMBRA.value)
+                janela.blit(texto_def_status_sombra, (400+2, 680+2))
+                texto_def_status = self.fonte.render(f"DEF:", True, Cores.DEFESA.value)
                 janela.blit(texto_def_status, (400, 680))
-                texto_def_status = fonte.render(f"{personagem.defesa_atual}", True, Cores.DEFESA.value)
+                texto_def_status_sombra = self.fonte.render(f"{personagem.defesa_atual}", True, Cores.SOMBRA.value)
+                janela.blit(texto_def_status_sombra, (480+2, 680+2))
+                texto_def_status = self.fonte.render(f"{personagem.defesa_atual}", True, Cores.DEFESA.value)
                 if personagem.esta_defendendo():
-                    texto_def_status = fonte.render(f"{personagem.defesa_atual}", True, Cores.BUFF_DEFESA.value)
+                    texto_def_status = self.fonte.render(f"{personagem.defesa_atual}", True, Cores.BUFF_DEFESA.value)
                 janela.blit(texto_def_status, (480, 680))
             else:
                 pass
         elif estado_batalha == 'selecionando_alvo':
             if posicao_seta_menu == 0 or posicao_seta_menu == 1:
-                fonte = pygame.font.Font(None, 45)
-                texto_escolhendo = fonte.render("SELECTING ENEMY TO ATTACK", True, Cores.TEXTO_PADRAO.value)
+                texto_escolhendo_sombra = self.fonte.render("SELECTING ENEMY TO ATTACK", True, Cores.SOMBRA.value)
+                janela.blit(texto_escolhendo_sombra, (70+2, 570+2))
+                texto_escolhendo = self.fonte.render("SELECTING ENEMY TO ATTACK", True, Cores.TEXTO_PADRAO.value)
                 janela.blit(texto_escolhendo, (70, 570))
-                texto_nome_inimigo = fonte.render(f"{self.inimigos[posicao_seta_menu].nome.upper()}", True, Cores.NOME_INIMIGO.value)
+                texto_nome_inimigo_sombra = self.fonte.render(f"{self.inimigos[posicao_seta_menu].nome.upper()}", True, Cores.SOMBRA.value)
+                janela.blit(texto_nome_inimigo_sombra, (70+2, 620+2))
+                texto_nome_inimigo = self.fonte.render(f"{self.inimigos[posicao_seta_menu].nome.upper()}", True, Cores.NOME_INIMIGO.value)
                 janela.blit(texto_nome_inimigo, (70, 620))
-                texto_vida_inimigo = fonte.render(f"HP: {self.inimigos[posicao_seta_menu].vida_atual}/{self.inimigos[posicao_seta_menu].vida_total}", True, Cores.VIDA_INIMIGO.value)
+                texto_vida_inimigo_sombra = self.fonte.render(f"HP: {self.inimigos[posicao_seta_menu].vida_atual}/{self.inimigos[posicao_seta_menu].vida_total}", True, Cores.SOMBRA.value)
+                janela.blit(texto_vida_inimigo_sombra, (70+2, 670+2))
+                texto_vida_inimigo = self.fonte.render(f"HP: {self.inimigos[posicao_seta_menu].vida_atual}/{self.inimigos[posicao_seta_menu].vida_total}", True, Cores.VIDA_INIMIGO.value)
                 janela.blit(texto_vida_inimigo, (70, 670))
-                texto_def = fonte.render("DEF: ", True, Cores.DEFESA.value)
+                texto_def_sombra = self.fonte.render("DEF: ", True, Cores.DEFESA.value)
+                janela.blit(texto_def_sombra, (350+2, 670+2))
+                texto_def = self.fonte.render("DEF: ", True, Cores.DEFESA.value)
                 janela.blit(texto_def, (350, 670))
+                texto_defesa_inimigo_sombra = self.fonte.render(f"{self.inimigos[posicao_seta_menu].defesa_atual}", True, Cores.SOMBRA.value)
+                janela.blit(texto_defesa_inimigo_sombra, (430+2, 670+2))
                 if self.inimigos[posicao_seta_menu].esta_defendendo():
-                    texto_defesa_inimigo = fonte.render(f"{self.inimigos[posicao_seta_menu].defesa_atual}", True, Cores.BUFF_DEFESA.value)
+                    texto_defesa_inimigo = self.fonte.render(f"{self.inimigos[posicao_seta_menu].defesa_atual}", True, Cores.BUFF_DEFESA.value)
                 else:
-                    texto_defesa_inimigo = fonte.render(f"{self.inimigos[posicao_seta_menu].defesa_atual}", True, Cores.DEFESA.value)
+                    texto_defesa_inimigo = self.fonte.render(f"{self.inimigos[posicao_seta_menu].defesa_atual}", True, Cores.DEFESA.value)
                 janela.blit(texto_defesa_inimigo, (430, 670))
         elif estado_batalha == 'mostrando_ataque':
             if personagem in self.aliados:
                 # Desenha o dano causado
-                fonte = pygame.font.Font(None, 45)
-                texto_dano = fonte.render(f"{personagem.nome.upper()} DEALT {personagem.ultimo_dano_causado} DAMAGE!", True, Cores.DANO.value)
+                texto_dano_sombra = self.fonte.render(f"{personagem.nome.upper()} DEALT {personagem.ultimo_dano_causado} DAMAGE!", True, Cores.SOMBRA.value)
+                janela.blit(texto_dano_sombra, (60+2, 580+2))
+                texto_dano = self.fonte.render(f"{personagem.nome.upper()} DEALT {personagem.ultimo_dano_causado} DAMAGE!", True, Cores.DANO.value)
                 janela.blit(texto_dano, (60, 580))
                 if self.inimigos[posicao_seta_menu].morreu():
-                    texto_morte = fonte.render(f"{self.inimigos[posicao_seta_menu].nome.upper()} DIED", True, Cores.MORREU.value)
+                    texto_morte_sombra = self.fonte.render(f"{self.inimigos[posicao_seta_menu].nome.upper()} DIED", True, Cores.SOMBRA.value)
+                    janela.blit(texto_morte_sombra, (60+2, 650+2))
+                    texto_morte = self.fonte.render(f"{self.inimigos[posicao_seta_menu].nome.upper()} DIED", True, Cores.MORREU.value)
                     janela.blit(texto_morte, (60, 650))
                 else:
-                    texto_vida_inimigo = fonte.render(f"{self.inimigos[posicao_seta_menu].nome.upper()}'S NEW HP: {self.inimigos[posicao_seta_menu].vida_atual}/{self.inimigos[posicao_seta_menu].vida_total}", True, Cores.TEXTO_PADRAO.value)
+                    texto_vida_inimigo_sombra = self.fonte.render(f"{self.inimigos[posicao_seta_menu].nome.upper()}'S NEW HP: {self.inimigos[posicao_seta_menu].vida_atual}/{self.inimigos[posicao_seta_menu].vida_total}", True, Cores.SOMBRA.value)
+                    janela.blit(texto_vida_inimigo_sombra, (60+2, 650+2))
+                    texto_vida_inimigo = self.fonte.render(f"{self.inimigos[posicao_seta_menu].nome.upper()}'S NEW HP: {self.inimigos[posicao_seta_menu].vida_atual}/{self.inimigos[posicao_seta_menu].vida_total}", True, Cores.TEXTO_PADRAO.value)
                     janela.blit(texto_vida_inimigo, (60, 650))
             else: # Se quem atacou é inimigo 
-                fonte = pygame.font.Font(None, 45)
-                texto_dano = fonte.render(f"{personagem.nome.upper()} INFLICTED {personagem.ultimo_dano_causado}", True, Cores.VIDA_INIMIGO.value)
+                texto_dano_sombra = self.fonte.render(f"{personagem.nome.upper()} INFLICTED {personagem.ultimo_dano_causado}", True, Cores.SOMBRA.value)
+                janela.blit(texto_dano_sombra, (60+2, 580+2))
+                texto_dano = self.fonte.render(f"{personagem.nome.upper()} INFLICTED {personagem.ultimo_dano_causado}", True, Cores.VIDA_INIMIGO.value)
                 janela.blit(texto_dano, (60, 580))
-                texto_dano = fonte.render(f"DAMAGE TO THE {self.aliados[self.ultimo_aliado_atacado].nome.upper()}!", True, Cores.VIDA_INIMIGO.value)
+                texto_dano_sombra = self.fonte.render(f"DAMAGE TO THE {self.aliados[self.ultimo_aliado_atacado].nome.upper()}!", True, Cores.SOMBRA.value)
+                janela.blit(texto_dano_sombra, (60+2, 630+2))
+                texto_dano = self.fonte.render(f"DAMAGE TO THE {self.aliados[self.ultimo_aliado_atacado].nome.upper()}!", True, Cores.VIDA_INIMIGO.value)
                 janela.blit(texto_dano, (60, 630))
                 if self.aliados[self.ultimo_aliado_atacado].morreu():
-                    texto_morte = fonte.render(f"{self.aliados[self.ultimo_aliado_atacado].nome.upper()} DIED", True, Cores.MORREU.value)
+                    texto_morte_sombra = self.fonte.render(f"{self.aliados[self.ultimo_aliado_atacado].nome.upper()} DIED", True, Cores.SOMBRA.value)
+                    janela.blit(texto_morte_sombra, (60+2, 680+2))
+                    texto_morte = self.fonte.render(f"{self.aliados[self.ultimo_aliado_atacado].nome.upper()} DIED", True, Cores.MORREU.value)
                     janela.blit(texto_morte, (60, 680))
         elif estado_batalha == 'mostrando_defesa':
             # Desenha a defesa
-            fonte = pygame.font.Font(None, 45)
-            texto_defesa = fonte.render(f"{personagem.nome.upper()} IS DEFENDING!", True, Cores.BUFF_DEFESA.value)
+            texto_defesa_sombra = self.fonte.render(f"{personagem.nome.upper()} IS DEFENDING!", True, Cores.SOMBRA.value)
+            janela.blit(texto_defesa_sombra, (60+2, 600+2))
+            texto_defesa = self.fonte.render(f"{personagem.nome.upper()} IS DEFENDING!", True, Cores.BUFF_DEFESA.value)
             janela.blit(texto_defesa, (60, 600))
-            texto_def = fonte.render("NEW DEF: ", True, Cores.DEFESA.value)
+            texto_def_sombra = self.fonte.render("NEW DEF: ", True, Cores.SOMBRA.value)
+            janela.blit(texto_def_sombra, (60+2, 670+2))
+            texto_def = self.fonte.render("NEW DEF: ", True, Cores.DEFESA.value)
             janela.blit(texto_def, (60, 670))
-            texto_defesa_inimigo = fonte.render(f"{personagem.defesa_atual}", True, Cores.BUFF_DEFESA.value)
+            texto_defesa_inimigo_sombra = self.fonte.render(f"{personagem.defesa_atual}", True, Cores.SOMBRA.value)
+            janela.blit(texto_defesa_inimigo_sombra, (220+2, 670+2))
+            texto_defesa_inimigo = self.fonte.render(f"{personagem.defesa_atual}", True, Cores.BUFF_DEFESA.value)
             janela.blit(texto_defesa_inimigo, (220, 670))
 
 
