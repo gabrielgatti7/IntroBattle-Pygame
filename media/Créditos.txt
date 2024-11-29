@@ -1,0 +1,19 @@
+--- Créditos ---
+
+Artes:
+• Augusto Moraes Alves
+• Bernardo Seibert
+• Geisson Venancio do Nascimento
+• Giulia Guimaraes
+• Kaique Taylor Gripa dos Santos
+• Kiara Pezzin Silva
+• Raquel Paulo Silva
+• Rhuan dos Santos
+
+Desenvolvimento do jogo:
+• Otávio Sales
+• Karla Sancio
+• João Gabriel de Barros Rocha
+
+Documentação:
+• Victor Aguiar Marques
