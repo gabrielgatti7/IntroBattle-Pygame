@@ -3,12 +3,24 @@
 ## Table of Contents
 - [Introduction](#introduction)
 - [Installation](#installation)
+- [Game preview](#game-preview)
 - [Usage](#usage)
 - [How to play](#how-to-play)
 - [Contributing](#contributing)
 
 ## Introduction
 IntroBattle-Pygame is a simple game developed using the Pygame library. In it, the player must initially choose 3 allies to battle against enemies in a turn-based combat.
+
+## Game preview
+<div style="text-align: center;">
+  <img src="media/imagens/print-menu.png" alt="Menu inicial" width="400"/>
+  <p>Main menu</p>
+</div>
+
+<div style="text-align: center; margin-top: 20px;">
+  <img src="media/imagens/print-battle.png" alt="Batalha" width="400"/>
+  <p>Battle</p>
+</div>
 
 ## Installation
 
@@ -35,6 +47,7 @@ python3 src/main.py
 
 To play the game, use the following controls:
 - **Z key**: Select
+- **X key**: Return
 - **Arrow keys**: Navigate through the menu
 
 ## Contributing
